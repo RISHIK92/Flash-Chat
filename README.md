@@ -48,7 +48,7 @@ A real-time chat application where users can join rooms using unique room codes 
    In the backend directory, start the WebSocket server:
 
    ```bash
-   npm start
+   npm run dev
    ```
 
 5. Start the Frontend server
@@ -56,7 +56,7 @@ A real-time chat application where users can join rooms using unique room codes 
    In the frontend directory, start the React development server:
 
    ```bash
-   npm start
+   npm run dev
    ```
 
    The application should now be running at http://localhost:3000.
@@ -81,7 +81,7 @@ flash-chat/
 │   └── package.json # Frontend dependencies
 │
 ├── backend/         # WebSocket server
-│   ├── server.js    # WebSocket server code
+│   ├── src/    # WebSocket server code
 │   └── package.json # Backend dependencies
 │
 └── README.md        # Project documentation
