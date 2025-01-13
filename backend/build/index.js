@@ -26,6 +26,14 @@ wss.on("connection", (socket) => {
                 }
             });
         }
+        if (parsedData.type === "typing") {
+            for (let i = 0; i < allsockets[roomId].length; i++) {
+                const currentSocket = allsockets[roomId][i].socket;
+                if (currentSocket.readyState === ws_1.WebSocket.OPEN && currentSocket !== socket) {
+                    currentSocket.send(JSON.stringify({ status: "typing", username }));
+                }
+            }
+        }
         // if (parsedData.type === "chat") {
         //     allsockets[roomId].forEach((current) => {
         //         if (current.readyState === WebSocket.OPEN) {
@@ -40,18 +48,11 @@ wss.on("connection", (socket) => {
                         allsockets[roomId][i].socket.send(JSON.stringify({ status: "sent", username: "me", message: parsedData.payload.message }));
                     }
                     else {
-                        allsockets[roomId][i].socket.send(JSON.stringify({ status: "recieved", username, message: parsedData.payload.message }));
+                        allsockets[roomId][i].socket.send(JSON.stringify({ status: "received", username, message: parsedData.payload.message }));
                     }
                 }
             }
         }
     });
 });
-//             // for (let i=0; i<allsockets[roomId].length; i++) {
-//             //     if (allsockets[roomId][i] === socket && allsockets[roomId][i].readyState === WebSocket.OPEN) {
-//             //         allsockets[roomId][i].send(parsedData.payload.message);
-//             //     }
-//             // }
-//     // socket.on("disconnect", () => {
-//     //     allsockets = allsockets.filter(x => x != socket);
-//     // })
+
