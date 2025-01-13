@@ -1,0 +1,25 @@
+{
+  "name": "w-16-ws-app",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc -b && node ./build/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "@types/ws": "^8.5.13",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "react-router-dom": "^6.28.1",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.5",
+    "@types/react-dom": "^19.0.3",
+    "@types/react-router-dom": "^5.3.3"
+  }
+}
