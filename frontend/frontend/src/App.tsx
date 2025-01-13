@@ -11,6 +11,7 @@ function App() {
   const roomId = location.state?.roomId as string | undefined;
   const username = location.state?.username as string | undefined;
   const [darkMode, setDarkMode] = useState(true);
+  const [userTyping, setUserTyping] = useState(null);
   const [m, setM] = useState<{ status: string,username: string, message: string }[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null); 
@@ -25,6 +26,11 @@ function App() {
       if (data.username && data.message) {
         setM((prevMessages) => [...prevMessages, { status: data.status, username: data.username, message: data.message}]);
       }
+        setUserTyping(data.username)
+
+        setTimeout(() => {
+          setUserTyping(null);
+        }, 1500);
     };
 
     wsRef.current = ws;
@@ -42,6 +48,35 @@ function App() {
       ws.close();
     };
   }, [roomId, username]);
+
+  const handleTyping = () => {
+    if (inputRef.current && wsRef.current) {
+      wsRef.current.send(
+        JSON.stringify({
+          type: "typing",
+          payload: { roomId, username },
+        })
+      );
+    }
+  };
+  
+
+  const send = () => {
+    if (inputRef.current && wsRef.current) {
+      const mg = inputRef.current?.value;
+      wsRef.current?.send(
+        JSON.stringify({
+          type: "chat",
+          payload: {
+            roomId: roomId,
+            message: mg,
+            username: username,
+          },
+        })
+      );
+      inputRef.current.value = ''; 
+    }
+  }
 
   const copyToClipboard = () => {
     setRandomState(roomId);
@@ -94,26 +129,12 @@ function App() {
             className={`flex-1 ${darkMode ? "bg-black text-white placeholder-neutral-400" : "bg-gray-100 text-black placeholder-neutral-600"} rounded-lg p-3 outline-none border ${darkMode ? "border-neutral-600" : "border-neutral-300"} focus:ring-1 focus:ring-white`}
             type="text"
             placeholder="Type a message..."
+            onChange={handleTyping}
           />
+          {userTyping && <p className={darkMode ? "text-white": "text-black"}>{userTyping} Typing...</p>}
           <button
             className={`font-semibold px-4 py-2 rounded-lg ${darkMode ? "bg-white text-black hover:bg-gray-200" : "bg-black text-white hover:bg-gray-800"}`}
-            onClick={() => {
-              if (inputRef.current && wsRef.current) {
-              const mg = inputRef.current?.value;
-              wsRef.current?.send(
-                JSON.stringify({
-                  type: "chat",
-                  payload: {
-                    roomId: roomId,
-                    message: mg,
-                    username: username,
-                  },
-                })
-              );
-              inputRef.current.value = ''; 
-            }
-            }}
-          >
+            onClick={send}>
             Send
           </button>
       </div>
