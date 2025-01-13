@@ -26,11 +26,13 @@ function App() {
       if (data.username && data.message) {
         setM((prevMessages) => [...prevMessages, { status: data.status, username: data.username, message: data.message}]);
       }
+      if (data.status === "typing") {
         setUserTyping(data.username)
 
         setTimeout(() => {
           setUserTyping(null);
         }, 1500);
+      }
     };
 
     wsRef.current = ws;
