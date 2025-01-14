@@ -11,6 +11,8 @@ interface RoomUser {
 let allsockets: {[roomId:string]: RoomUser[]} = {};
 
 wss.on("connection", (socket) => {
+    let currentRoomId: string | null = null;
+    let currentUsername: string | null = null;
 
     socket.on("message", (message) => {
         //@ts-ignore
@@ -23,6 +25,8 @@ wss.on("connection", (socket) => {
                 allsockets[roomId] = [];
             }
             allsockets[roomId].push({ socket,username })
+            currentRoomId = roomId;
+            currentUsername = username
 
             const joinMessage = `${username} has joined the room.`;
             allsockets[roomId].forEach((user) => {
@@ -65,6 +69,25 @@ wss.on("connection", (socket) => {
                     }
                 }
             }
+        }
+    })
+    socket.on('close', () => {
+        if (currentRoomId && currentUsername && allsockets[currentRoomId]) {
+            allsockets[currentRoomId] = allsockets[currentRoomId].filter((user) => user.socket !== socket)
+
+            const leaveMessage = `${currentUsername} has left the room.`;
+            allsockets[currentRoomId].forEach((user) => {
+                if (user.socket.readyState === WebSocket.OPEN) {
+                    user.socket.send(
+                        JSON.stringify({
+                            type: "chat",
+                            status: "received",
+                            username: "System",
+                            message: leaveMessage,
+                        })
+                    );
+                }
+            });
         }
     })
 })
