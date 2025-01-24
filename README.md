@@ -59,7 +59,7 @@ A real-time chat application where users can join rooms using unique room codes 
    npm run dev
    ```
 
-   The application should now be running at http://localhost:3000.
+   The application should now be running at [http://localhost:3000](https://flash-chat-frontend-host.onrender.com/).
 
 ## Usage
 
